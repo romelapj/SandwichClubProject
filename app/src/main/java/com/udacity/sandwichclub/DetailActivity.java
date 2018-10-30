@@ -4,16 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
@@ -56,7 +60,23 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    private void populateUI(Sandwich sandwich) {
+        TextView originTv = findViewById(R.id.origin_tv);
+        originTv.setText(sandwich.getPlaceOfOrigin());
+        TextView ingredientsTv = findViewById(R.id.ingredients_tv);
+        ingredientsTv.setText(getItemsDisplay(sandwich.getIngredients()));
+        TextView alsoKnownTv = findViewById(R.id.also_known_tv);
+        alsoKnownTv.setText(getItemsDisplay(sandwich.getAlsoKnownAs()));
+        TextView descriptionTV = findViewById(R.id.description_tv);
+        descriptionTV.setText(sandwich.getDescription());
 
+    }
+
+    private StringBuilder getItemsDisplay(List<String> items) {
+        StringBuilder itemsDisplay = new StringBuilder();
+        for (String ingredient : items) {
+            itemsDisplay.append(getString(R.string.detail_bullet, ingredient));
+        }
+        return itemsDisplay;
     }
 }
